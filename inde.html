@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FCN「不成交只領息」投資試算工具</title>
+    <style>
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            color: #0f4c81;
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .specs-box {
+            background-color: #eef5fa;
+            border-left: 4px solid #1d72b8;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+        .specs-title {
+            font-weight: bold;
+            color: #0f4c81;
+            margin-bottom: 8px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1d72b8;
+            box-shadow: 0 0 0 3px rgba(29,114,184,0.1);
+        }
+        .error-message {
+            color: #e53e3e;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+        .result-section {
+            margin-top: 30px;
+            border-top: 2px dashed #e2e8f0;
+            padding-top: 25px;
+        }
+        .result-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0f4c81;
+            margin-bottom: 20px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        .card-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        .card-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0f4c81;
+        }
+        .card-value.highlight {
+            color: #10b981;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #edf2f7;
+        }
+        th {
+            background-color: #0f4c81;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f8fafc;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        .badge-guaranteed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .badge-conditional {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .disclaimer {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 30px;
+            line-height: 1.5;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>FCN「不成交只領息」收益試算工具</h1>
+    <div class="subtitle">依據券商詢價條件：年化 20%、連結 NVDA/TSMC/AMD、執行價 65% 模擬計算</div>
+
+    <div class="specs-box">
+        <div class="specs-title">📌 預設券商條件規格：</div>
+        連結標的：輝達(NVIDIA)、台積電(TSMC)、超微(AMD) ｜ 年化票息率：<strong>20%</strong> ｜ 執行價：<strong>65%</strong> ｜ 提前出場：90%<br>
+        計息機制：首月保證領息，後續月份採 Daily Memory 每日觀察機制。<strong>本工具假設最理想不成交狀態之完整利息試算。</strong>
+    </div>
+
+    <!-- Inputs -->
+    <div class="form-group">
+        <label for="investment">1. 輸入投資本金 (台幣元)</label>
+        <input type="number" id="investment" value="2000000" min="1500000" step="100000" oninput="calculateReceipt()">
+        <div id="error-msg" class="error-message">❌ 投資金額最低下限為 1,500,000 元台幣</div>
+    </div>
+
+    <div class="form-group">
+        <label for="period">2. 選擇投資期滿時間</label>
+        <select id="period" onchange="calculateReceipt()">
+            <option value="1">1 個月期滿</option>
+            <option value="3">3 個月期滿</option>
+            <option value="6" selected>6 個月期滿 (原圖規格)</option>
+            <option value="12">1 年期滿 (12 個月)</option>
+        </select>
+    </div>
+
+    <!-- Outputs Section -->
+    <div class="result-section">
+        <div class="result-title">💰 試算結果摘要 (完美不成交路徑)</div>
+        
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-label">每月預估發放利息</div>
+                <div class="card-value" id="monthly-息" style="color: #10b981;">$0</div>
+            </div>
+            <div class="card">
+                <div class="card-label">期滿累積總收益</div>
+                <div class="card-value" id="total-息">$0</div>
+            </div>
+            <div class="card">
+                <div class="card-label">期滿退回本金</div>
+                <div class="card-value" id="return-principal">$0</div>
+            </div>
+        </div>
+
+        <div class="result-title" style="font-size: 16px; margin-bottom: 10px;">📅 月度利息發放預估明細</div>
+        <div class="table-responsive">
+            <table id="details-table">
+                <thead>
+                    <tr>
+                        <th>月份</th>
+                        <th>預估發放利息 (台幣)</th>
+                        <th>發放條件狀態</th>
+                        <th>本金狀態</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Dynamic Rows -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        * 註：本試算工具之結果為「不成交只領利息」理想狀態下之模擬推算。FCN 屬結構化商品，非一般定期存款，實際獲利與本金返還取決於連結標的之每日收盤價波動。若標的於期末跌破執行價(65%)，本金將會被迫轉換為該跌幅最大之股票，投資人須承擔本金損失之風險。
+    </div>
+</div>
+
+<script>
+    function formatCurrency(num) {
+        return 'NT$ ' + Math.round(num).toLocaleString('zh-TW');
+    }
+
+    function calculateReceipt() {
+        const investmentInput = document.getElementById('investment');
+        const errorMsg = document.getElementById('error-msg');
+        const periodSelect = document.getElementById('period');
+        
+        const principal = parseFloat(investmentInput.value);
+        const months = parseInt(periodSelect.value);
+        
+        // Validation
+        if (isNaN(principal) || principal < 1500000) {
+            errorMsg.style.display = 'block';
+            return;
+        } else {
+            errorMsg.style.display = 'none';
+        }
+
+        const annualRate = 0.20; // 20%
+        const monthlyInterest = (principal * annualRate) / 12;
+        const totalInterest = monthlyInterest * months;
+
+        // Update cards
+        document.getElementById('monthly-息').innerText = formatCurrency(monthlyInterest);
+        document.getElementById('total-息').innerText = formatCurrency(totalInterest);
+        document.getElementById('return-principal').innerText = formatCurrency(principal);
+
+        // Update table
+        const tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+
+        for (let i = 1; i <= months; i++) {
+            const tr = document.createElement('tr');
+            
+            // Month Cell
+            const tdMonth = document.createElement('td');
+            tdMonth.innerText = '第 ' + i + ' 個月';
+            tr.appendChild(tdMonth);
+
+            // Interest Cell
+            const tdInterest = document.createElement('td');
+            tdInterest.innerText = formatCurrency(monthlyInterest);
+            tdInterest.style.fontWeight = 'bold';
+            tdInterest.style.color = '#059669';
+            tr.appendChild(tdInterest);
+
+            // Status Cell
+            const tdStatus = document.createElement('td');
+            if (i === 1) {
+                tdStatus.innerHTML = '<span class="badge badge-guaranteed">保證領息 (必定獲得)</span>';
+            } else {
+                tdStatus.innerHTML = '<span class="badge badge-conditional">標的未跌破 65% 執行價</span>';
+            }
+            tr.appendChild(tdStatus);
+
+            // Principal Cell
+            const tdPrincipalStatus = document.createElement('td');
+            if (i === months) {
+                tdPrincipalStatus.innerHTML = '<strong>期滿退回 100% 本金</strong>';
+                tdPrincipalStatus.style.color = '#1d72b8';
+            } else {
+                tdPrincipalStatus.innerText = '合約存續中';
+                tdPrincipalStatus.style.color = '#64748b';
+            }
+            tr.appendChild(tdPrincipalStatus);
+
+            tbody.appendChild(tr);
+        }
+    }
+
+    // Run once on load
+    window.onload = calculateReceipt;
+</script>
+
+</body>
+</html>
+"""
+
+# Save calculator file
+calc_html_path = 'fcn_interest_calculator.html'
+with open(calc_html_path, 'w', encoding='utf-8') as f:
+    f.write(html_calculator_content)
+print(f"Successfully generated calculator {calc_html_path}")
