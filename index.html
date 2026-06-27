@@ -1,26 +1,27 @@
 
 <!DOCTYPE html>
 <html lang="zh-TW">
-    
-JavaScript
-(function() {
-    var allowedReferrer = "https://b89tiger009.github.io/Portal_web_enc/";
-    var currentReferrer = document.referrer;
-    
-    // 檢查瀏覽器的來源網頁是否是以指定網址開頭
-    if (!currentReferrer || currentReferrer.indexOf(allowedReferrer) !== 0) {
-        alert("錯誤：未授權的存取來源！本網頁僅允許從指定門戶網站開啟。\n\nUnauthorized Access.");
-        // 如果來源不符（或直接輸入網址/本機點開），強制導向回您指定的入口網站
-        window.location.href = allowedReferrer;
-        // 拋出異常強制停止後續程式碼與 HTML 的執行
-        throw new Error("Access Denied: Invalid Referrer Source.");
-    }
-})();
-    
+   
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FCN固定配息之境外結構型商品試算工具</title>
+    <script>
+        // 嚴格檢查 HTTP 來源網頁 (Referrer) 驗證機制
+        (function() {
+            var allowedReferrer = "https://b89tiger009.github.io/Portal_web_enc/";
+            var currentReferrer = document.referrer;
+            
+            // 如果來源網頁不完全符合允許的網址，則強制中斷載入並顯示白屏示警
+            if (!currentReferrer || currentReferrer.indexOf(allowedReferrer) !== 0) {
+                alert("錯誤：未授權的存取來源！本網頁僅允許從指定門戶網站開啟。\\n\\nUnauthorized Access.");
+                // 重新導向回允許的門戶首頁，或引導至空白頁
+                window.location.href = allowedReferrer;
+                // 強制停止後續所有 DOM 的解析
+                throw new Error("Access Denied: Invalid Referrer Source.");
+            }
+        })();
+    </script>
     <style>
         body {
             font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
