@@ -1,65 +1,61 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FCN「不成交只領息」投資試算工具</title>
+    <title>FCN自訂客製化試算網頁</title>
     <style>
         body {
             font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
-            background-color: #f0f4f8;
-            color: #333;
+            background-color: #f4f7f6;
+            color: #333333;
             margin: 0;
             padding: 20px;
         }
         .container {
-            max-width: 750px;
+            max-width: 900px;
             margin: 0 auto;
             background-color: #ffffff;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 35px;
         }
         h1 {
             color: #0f4c81;
             text-align: center;
             margin-bottom: 5px;
-            font-size: 24px;
+            font-size: 26px;
         }
         .subtitle {
             text-align: center;
-            color: #555;
+            color: #666;
             margin-bottom: 30px;
-            font-size: 14px;
+            font-size: 15px;
         }
-        .specs-box {
-            background-color: #eef5fa;
-            border-left: 4px solid #1d72b8;
-            padding: 15px;
-            border-radius: 0 8px 8px 0;
+        
+        /* Grid Layout for inputs */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
             margin-bottom: 25px;
-            font-size: 13px;
-        }
-        .specs-title {
-            font-weight: bold;
-            color: #0f4c81;
-            margin-bottom: 8px;
         }
         .form-group {
-            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
         }
         label {
-            display: block;
             font-weight: bold;
             margin-bottom: 8px;
             color: #2c3e50;
+            font-size: 14px;
         }
-        input[type="number"], select {
-            width: 100%;
+        input, select {
             padding: 12px;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 15px;
             box-sizing: border-box;
             background-color: #fff;
         }
@@ -68,60 +64,116 @@
             border-color: #1d72b8;
             box-shadow: 0 0 0 3px rgba(29,114,184,0.1);
         }
-        .error-message {
+        .error-text {
             color: #e53e3e;
-            font-size: 13px;
+            font-size: 12px;
             margin-top: 5px;
             display: none;
+            font-weight: bold;
         }
+
+        /* Underlyings Row Layout */
+        .ticker-section-title {
+            font-weight: bold;
+            color: #0f4c81;
+            margin: 25px 0 12px 0;
+            font-size: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        .tickers-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .ticker-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .ticker-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+        .ticker-input {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .ticker-info {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.4;
+            text-align: left;
+            background: #fff;
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px dashed #cbd5e1;
+            min-height: 54px;
+        }
+
+        /* Summary Dashboard cards */
         .result-section {
-            margin-top: 30px;
-            border-top: 2px dashed #e2e8f0;
+            margin-top: 35px;
+            border-top: 2px dashed #cbd5e1;
             padding-top: 25px;
         }
-        .result-title {
+        .section-title {
             font-size: 18px;
             font-weight: bold;
             color: #0f4c81;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 20px;
+            margin-bottom: 30px;
         }
-        .card {
+        .stat-card {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
-            padding: 15px;
+            padding: 20px 15px;
             text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        .card-label {
-            font-size: 12px;
+        .stat-label {
+            font-size: 13px;
             color: #64748b;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
-        .card-value {
-            font-size: 20px;
+        .stat-value {
+            font-size: 22px;
             font-weight: bold;
             color: #0f4c81;
         }
-        .card-value.highlight {
+        .stat-value.green {
             color: #10b981;
         }
-        .table-responsive {
-            overflow-x: auto;
-        }
+
+        /* Details Table */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
             font-size: 14px;
+            background: #fff;
         }
         th, td {
-            padding: 12px;
+            padding: 14px 12px;
             text-align: center;
             border-bottom: 1px solid #edf2f7;
         }
@@ -135,183 +187,298 @@
         }
         .badge {
             display: inline-block;
-            padding: 3px 8px;
-            font-size: 11px;
+            padding: 4px 10px;
+            font-size: 12px;
             font-weight: bold;
             border-radius: 4px;
-        }
-        .badge-guaranteed {
-            background-color: #d1fae5;
-            color: #065f46;
+            text-align: left;
+            line-height: 1.5;
         }
         .badge-conditional {
             background-color: #dbeafe;
             color: #1e40af;
         }
+        .badge-final {
+            background-color: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fef3c7;
+        }
         .disclaimer {
             font-size: 12px;
             color: #94a3b8;
-            margin-top: 30px;
-            line-height: 1.5;
+            margin-top: 35px;
+            line-height: 1.6;
             border-top: 1px solid #e2e8f0;
-            padding-top: 15px;
+            padding-top: 20px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>FCN「不成交只領息」收益試算工具</h1>
-    <div class="subtitle">依據券商詢價條件：年化 20%、連結 NVDA/TSMC/AMD、執行價 65% 模擬計算</div>
+    <h1>FCN「不成交只領息」自訂客製化試算工具</h1>
+    <div class="subtitle">依據自訂參數即時精確動態演算收益及連結標的資產細節</div>
 
-    <div class="specs-box">
-        <div class="specs-title">📌 預設券商條件規格：</div>
-        連結標的：輝達(NVIDIA)、台積電(TSMC)、超微(AMD) ｜ 年化票息率：<strong>20%</strong> ｜ 執行價：<strong>65%</strong> ｜ 提前出場：90%<br>
-        計息機制：首月保證領息，後續月份採 Daily Memory 每日觀察機制。<strong>本工具假設最理想不成交狀態之完整利息試算。</strong>
+    <!-- Parameter Inputs Grid (1-4) -->
+    <div class="input-grid">
+        <div class="form-group">
+            <label for="investment">投資本金 (台幣元)</label>
+            <input type="number" id="investment" value="2000000" min="0" step="50000" oninput="runAllCalculations()">
+            <div id="err-investment" class="error-text">❌ 投資本金不可小於 0</div>
+        </div>
+
+        <div class="form-group">
+            <label for="period">投資期滿時間 (月)</label>
+            <select id="period" onchange="runAllCalculations()">
+                <option value="1">1 個月</option>
+                <option value="2">2 個月</option>
+                <option value="3">3 個月</option>
+                <option value="4">4 個月</option>
+                <option value="5">5 個月</option>
+                <option value="6" selected>6 個月</option>
+                <option value="7">7 個月</option>
+                <option value="8">8 個月</option>
+                <option value="9">9 個月</option>
+                <option value="10">10 個月</option>
+                <option value="11">11 個月</option>
+                <option value="12">12 個月</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="strike-pct">執行價 (%)</label>
+            <input type="number" id="strike-pct" value="65" min="0" max="100" step="1" oninput="runAllCalculations()">
+            <div id="err-strike" class="error-text">❌ 執行價範圍必須介於 0 至 100 之間</div>
+        </div>
+
+        <div class="form-group">
+            <label for="coupon-rate">年化票息 (%)</label>
+            <input type="number" id="coupon-rate" value="20" min="0" max="100" step="0.5" oninput="runAllCalculations()">
+            <div id="err-coupon" class="error-text">❌ 年化票息範圍必須介於 0 至 100 之間</div>
+        </div>
     </div>
 
-    <!-- Inputs -->
-    <div class="form-group">
-        <label for="investment">1. 輸入投資本金 (台幣元)</label>
-        <input type="number" id="investment" value="2000000" min="1500000" step="100000" oninput="calculateReceipt()">
-        <div id="error-msg" class="error-message">❌ 投資金額最低下限為 1,500,000 元台幣</div>
+    <!-- Underlyings Inputs Section -->
+    <div class="ticker-section-title">🔍 連結標的設定 (可任意輸入美股代號)</div>
+    <div class="tickers-grid">
+        <div class="ticker-card">
+            <div class="ticker-label">標的 1</div>
+            <input type="text" id="t1" class="ticker-input" value="NVDA" oninput="updateTickerInfo(1)">
+            <div id="t1-info" class="ticker-info"></div>
+        </div>
+        <div class="ticker-card">
+            <div class="ticker-label">標的 2</div>
+            <input type="text" id="t2" class="ticker-input" value="TSM" oninput="updateTickerInfo(2)">
+            <div id="t2-info" class="ticker-info"></div>
+        </div>
+        <div class="ticker-card">
+            <div class="ticker-label">標的 3</div>
+            <input type="text" id="t3" class="ticker-input" value="AMD" oninput="updateTickerInfo(3)">
+            <div id="t3-info" class="ticker-info"></div>
+        </div>
+        <div class="ticker-card">
+            <div class="ticker-label">標的 4</div>
+            <input type="text" id="t4" class="ticker-input" value="AAPL" oninput="updateTickerInfo(4)">
+            <div id="t4-info" class="ticker-info"></div>
+        </div>
+        <div class="ticker-card">
+            <div class="ticker-label">標的 5</div>
+            <input type="text" id="t5" class="ticker-input" value="MSFT" oninput="updateTickerInfo(5)">
+            <div id="t5-info" class="ticker-info"></div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="period">2. 選擇投資期滿時間</label>
-        <select id="period" onchange="calculateReceipt()">
-            <option value="1">1 個月期滿</option>
-            <option value="3">3 個月期滿</option>
-            <option value="6" selected>6 個月期滿 (原圖規格)</option>
-            <option value="12">1 年期滿 (12 個月)</option>
-        </select>
-    </div>
-
-    <!-- Outputs Section -->
+    <!-- Results Overview -->
     <div class="result-section">
-        <div class="result-title">💰 試算結果摘要 (完美不成交路徑)</div>
-        
+        <div class="section-title">💰 試算結果摘要</div>
         <div class="grid-3">
-            <div class="card">
-                <div class="card-label">每月預估發放利息</div>
-                <div class="card-value" id="monthly-息" style="color: #10b981;">$0</div>
+            <div class="stat-card">
+                <div class="stat-label">每月預估發放利息</div>
+                <div class="stat-value green" id="out-monthly-interest">NT$ 0</div>
             </div>
-            <div class="card">
-                <div class="card-label">期滿累積總收益</div>
-                <div class="card-value" id="total-息">$0</div>
+            <div class="stat-card">
+                <div class="stat-label">期滿累積總收益</div>
+                <div class="stat-value" id="out-total-interest">NT$ 0</div>
             </div>
-            <div class="card">
-                <div class="card-label">期滿退回本金</div>
-                <div class="card-value" id="return-principal">$0</div>
+            <div class="stat-card">
+                <div class="stat-label">期滿退回本金</div>
+                <div class="stat-value" id="out-return-principal">NT$ 0</div>
             </div>
         </div>
 
-        <div class="result-title" style="font-size: 16px; margin-bottom: 10px;">📅 月度利息發放預估明細</div>
-        <div class="table-responsive">
-            <table id="details-table">
-                <thead>
-                    <tr>
-                        <th>月份</th>
-                        <th>預估發放利息 (台幣)</th>
-                        <th>發放條件狀態</th>
-                        <th>本金狀態</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    <!-- Dynamic Rows -->
-                </tbody>
-            </table>
-        </div>
+        <!-- Monthly Breakdown Table -->
+        <div class="section-title">📊 月度利息發放預估明細</div>
+        <table id="breakdown-table">
+            <thead>
+                <tr>
+                    <th>月份</th>
+                    <th>預估發放利息 (台幣)</th>
+                    <th>累積領息 (台幣)</th>
+                    <th style="width: 40%; text-align: left; padding-left: 20px;">發放條件</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Dynamically filled rows -->
+            </tbody>
+        </table>
     </div>
 
     <div class="disclaimer">
-        * 註：本試算工具之結果為「不成交只領利息」理想狀態下之模擬推算。FCN 屬結構化商品，非一般定期存款，實際獲利與本金返還取決於連結標的之每日收盤價波動。若標的於期末跌破執行價(65%)，本金將會被迫轉換為該跌幅最大之股票，投資人須承擔本金損失之風險。
+        * 註：本工具股票數據為昨日收盤模擬價（美股）。執行價計算公式：昨日收盤價 × 執行價百分比。月度利息明細之條件說明配合期滿機制設定。結構型商品具備高波動風險，請審慎評估。
     </div>
 </div>
 
 <script>
+    const stockDatabase = {
+        "NVDA": { name: "NVIDIA Corp. (輝達)", price: 125.40 },
+        "TSM": { name: "Taiwan Semiconductor (台積電)", price: 172.10 },
+        "AMD": { name: "Advanced Micro Devices (超微)", price: 158.50 },
+        "AAPL": { name: "Apple Inc. (蘋果)", price: 214.30 },
+        "MSFT": { name: "Microsoft Corp. (微軟)", price: 448.20 },
+        "GOOGL": { name: "Alphabet Inc. (谷歌)", price: 175.60 },
+        "AMZN": { name: "Amazon.com Inc. (亞馬遜)", price: 189.20 },
+        "META": { name: "Meta Platforms (臉書)", price: 498.80 },
+        "TSLA": { name: "Tesla Inc. (特斯拉)", price: 184.50 },
+        "NFLX": { name: "Netflix Inc. (網飛)", price: 660.10 }
+    };
+
     function formatCurrency(num) {
         return 'NT$ ' + Math.round(num).toLocaleString('zh-TW');
     }
 
-    function calculateReceipt() {
-        const investmentInput = document.getElementById('investment');
-        const errorMsg = document.getElementById('error-msg');
-        const periodSelect = document.getElementById('period');
+    function updateTickerInfo(id) {
+        const inputEl = document.getElementById('t' + id);
+        const infoEl = document.getElementById('t' + id + '-info');
+        const strikePct = parseFloat(document.getElementById('strike-pct').value) || 0;
         
-        const principal = parseFloat(investmentInput.value);
-        const months = parseInt(periodSelect.value);
+        let symbol = inputEl.value.trim().toUpperCase();
         
-        // Validation
-        if (isNaN(principal) || principal < 1500000) {
-            errorMsg.style.display = 'block';
+        if (symbol === '') {
+            infoEl.innerHTML = "<span style='color:#a0aec0;'>未輸入標的</span>";
             return;
-        } else {
-            errorMsg.style.display = 'none';
         }
 
-        const annualRate = 0.20; // 20%
-        const monthlyInterest = (principal * annualRate) / 12;
-        const totalInterest = monthlyInterest * months;
+        let stock = stockDatabase[symbol];
+        if (!stock) {
+            let hash = 0;
+            for (let i = 0; i < symbol.length; i++) hash = symbol.charCodeAt(i) + ((hash << 5) - hash);
+            let mockPrice = Math.abs((hash % 200) + 50);
+            stock = { name: symbol + " Inc. (美股股票)", price: mockPrice };
+        }
 
-        // Update cards
-        document.getElementById('monthly-息').innerText = formatCurrency(monthlyInterest);
-        document.getElementById('total-息').innerText = formatCurrency(totalInterest);
-        document.getElementById('return-principal').innerText = formatCurrency(principal);
+        let calcStrikePrice = stock.price * (strikePct / 100);
+        
+        infoEl.innerHTML = `
+            <strong>${stock.name}</strong><br>
+            參考價: $${stock.price.toFixed(2)}<br>
+            執行價: <span style="color:#d97706; font-weight:bold;">$${calcStrikePrice.toFixed(2)}</span>
+        `;
+    }
 
-        // Update table
+    function runAllCalculations() {
+        const invInput = document.getElementById('investment');
+        const strikeInput = document.getElementById('strike-pct');
+        const couponInput = document.getElementById('coupon-rate');
+        const periodSelect = document.getElementById('period');
+
+        const errInv = document.getElementById('err-investment');
+        const errStrike = document.getElementById('err-strike');
+        const errCoupon = document.getElementById('err-coupon');
+
+        let principal = parseFloat(invInput.value);
+        let strikePct = parseFloat(strikeInput.value);
+        let couponRate = parseFloat(couponInput.value);
+        let months = parseInt(periodSelect.value);
+
+        let hasError = false;
+
+        if (isNaN(principal) || principal < 0) {
+            errInv.style.display = 'block';
+            hasError = true;
+        } else {
+            errInv.style.display = 'none';
+        }
+
+        if (isNaN(strikePct) || strikePct < 0 || strikePct > 100) {
+            errStrike.style.display = 'block';
+            hasError = true;
+        } else {
+            errStrike.style.display = 'none';
+        }
+
+        if (isNaN(couponRate) || couponRate < 0 || couponRate > 100) {
+            errCoupon.style.display = 'block';
+            hasError = true;
+        } else {
+            errCoupon.style.display = 'none';
+        }
+
+        for (let id = 1; id <= 5; id++) {
+            updateTickerInfo(id);
+        }
+
+        if (hasError) return;
+
+        let monthlyInterest = (principal * (couponRate / 100)) / 12;
+        let totalAccumulatedInterest = monthlyInterest * months;
+
+        document.getElementById('out-monthly-interest').innerText = formatCurrency(monthlyInterest);
+        document.getElementById('out-total-interest').innerText = formatCurrency(totalAccumulatedInterest);
+        document.getElementById('out-return-principal').innerText = formatCurrency(principal);
+
         const tbody = document.getElementById('table-body');
         tbody.innerHTML = '';
 
-        for (let i = 1; i <= months; i++) {
-            const tr = document.createElement('tr');
+        let progressiveInterest = 0;
+        for (let m = 1; m <= months; m++) {
+            progressiveInterest += monthlyInterest;
             
-            // Month Cell
+            const tr = document.createElement('tr');
+
+            // 1. 月份
             const tdMonth = document.createElement('td');
-            tdMonth.innerText = '第 ' + i + ' 個月';
+            tdMonth.innerHTML = `<strong>第 ${m} 個月</strong>`;
             tr.appendChild(tdMonth);
 
-            // Interest Cell
-            const tdInterest = document.createElement('td');
-            tdInterest.innerText = formatCurrency(monthlyInterest);
-            tdInterest.style.fontWeight = 'bold';
-            tdInterest.style.color = '#059669';
-            tr.appendChild(tdInterest);
+            // 2. 預估發放利息
+            const tdMonthly = document.createElement('td');
+            tdMonthly.innerText = formatCurrency(monthlyInterest);
+            tdMonthly.style.color = '#059669';
+            tdMonthly.style.fontWeight = 'bold';
+            tr.appendChild(tdMonthly);
 
-            // Status Cell
-            const tdStatus = document.createElement('td');
-            if (i === 1) {
-                tdStatus.innerHTML = '<span class="badge badge-guaranteed">保證領息 (必定獲得)</span>';
-            } else {
-                tdStatus.innerHTML = '<span class="badge badge-conditional">標的未跌破 65% 執行價</span>';
-            }
-            tr.appendChild(tdStatus);
+            // 3. 累積領息
+            const tdAccum = document.createElement('td');
+            tdAccum.innerText = formatCurrency(progressiveInterest);
+            tdAccum.style.color = '#0f4c81';
+            tdAccum.style.fontWeight = 'bold';
+            tr.appendChild(tdAccum);
 
-            // Principal Cell
-            const tdPrincipalStatus = document.createElement('td');
-            if (i === months) {
-                tdPrincipalStatus.innerHTML = '<strong>期滿退回 100% 本金</strong>';
-                tdPrincipalStatus.style.color = '#1d72b8';
+            // 4. 發放條件文字修正
+            const tdCond = document.createElement('td');
+            tdCond.style.textAlign = 'left';
+            tdCond.style.paddingLeft = '20px';
+            
+            if (m === 1) {
+                // 第 1 個月：永遠維持保證領息
+                tdCond.innerHTML = '<span class="badge badge-guaranteed">保證領息 (必定獲得)</span>';
+            } else if (m < months) {
+                // 第 2 個月 至 第 n-1 個月
+                tdCond.innerHTML = '<span class="badge badge-conditional">標的未漲破參考價</span>';
             } else {
-                tdPrincipalStatus.innerText = '合約存續中';
-                tdPrincipalStatus.style.color = '#64748b';
+                // 最後一個月 (第 n 個月)
+                tdCond.innerHTML = '<div class="badge badge-final">1. 標的未漲破參考價<br>2. 跌破執行價承接股票</div>';
             }
-            tr.appendChild(tdPrincipalStatus);
+            tr.appendChild(tdCond);
 
             tbody.appendChild(tr);
         }
     }
 
-    // Run once on load
-    window.onload = calculateReceipt;
+    window.onload = function() {
+        runAllCalculations();
+    };
 </script>
 
 </body>
 </html>
-"""
-
-# Save calculator file
-calc_html_path = 'fcn_interest_calculator.html'
-with open(calc_html_path, 'w', encoding='utf-8') as f:
-    f.write(html_calculator_content)
-print(f"Successfully generated calculator {calc_html_path}")
