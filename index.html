@@ -1,6 +1,22 @@
 
 <!DOCTYPE html>
 <html lang="zh-TW">
+    
+JavaScript
+(function() {
+    var allowedReferrer = "https://b89tiger009.github.io/Portal_web_enc/";
+    var currentReferrer = document.referrer;
+    
+    // 檢查瀏覽器的來源網頁是否是以指定網址開頭
+    if (!currentReferrer || currentReferrer.indexOf(allowedReferrer) !== 0) {
+        alert("錯誤：未授權的存取來源！本網頁僅允許從指定門戶網站開啟。\n\nUnauthorized Access.");
+        // 如果來源不符（或直接輸入網址/本機點開），強制導向回您指定的入口網站
+        window.location.href = allowedReferrer;
+        // 拋出異常強制停止後續程式碼與 HTML 的執行
+        throw new Error("Access Denied: Invalid Referrer Source.");
+    }
+})();
+    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
