@@ -27,7 +27,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 900px;
+            max-width: 950px;
             margin: 0 auto;
             background-color: #ffffff;
             border-radius: 12px;
@@ -47,7 +47,7 @@
             font-size: 15px;
         }
         
-        /* 輸入欄位網格佈局 */
+        /* 輸入欄位網格佈局 (依照指定順序排列) */
         .input-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -120,9 +120,19 @@
             font-size: 14px;
             text-align: center;
             text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .ref-price-input {
+            width: 100%;
+            padding: 6px;
+            font-size: 12px;
+            text-align: center;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            margin-bottom: 5px;
         }
         .ticker-info {
-            margin-top: 8px;
+            margin-top: 4px;
             font-size: 11px;
             color: #64748b;
             line-height: 1.4;
@@ -131,7 +141,7 @@
             padding: 6px;
             border-radius: 4px;
             border: 1px dashed #cbd5e1;
-            min-height: 54px;
+            min-height: 90px;
         }
 
         /* 試算成果摘要字卡 */
@@ -234,7 +244,7 @@
 
 <div class="container">
     <h1>FCN固定配息之境外結構型商品試算工具</h1>
-    <div class="subtitle">對接 Finnhub 全球金融大廠數據端點，提供長期且絕對穩定的即時美股查價環境</div>
+    <div class="subtitle">整合自訂進場與下限價演算、Finnhub 即時真實查價與動態月份流動條款</div>
 
     <div class="input-grid">
         <div class="form-group">
@@ -242,7 +252,16 @@
             <input type="number" id="investment" value="2000000" min="0" step="50000" oninput="runAllCalculations()">
             <div id="err-investment" class="error-text">❌ 投資本金不可小於 0</div>
         </div>
+        <div class="form-group">
+            <label for="coupon-rate">年化票息 (%)</label>
+            <input type="number" id="coupon-rate" value="20" min="0" max="100" step="0.5" oninput="runAllCalculations()">
+            <div id="err-coupon" class="error-text">❌ 年化票息範圍必須介於 0 至 100 之間</div>
+        </div>
 
+        <div class="form-group">
+            <label for="start-date">進場時間 (西元時間選項)</label>
+            <input type="date" id="start-date" value="2026-06-28" onchange="runAllCalculations()">
+        </div>
         <div class="form-group">
             <label for="period">投資期滿時間 (月)</label>
             <select id="period" onchange="runAllCalculations()">
@@ -266,39 +285,43 @@
             <input type="number" id="strike-pct" value="65" min="0" max="100" step="1" oninput="runAllCalculations()">
             <div id="err-strike" class="error-text">❌ 執行價範圍必須介於 0 至 100 之間</div>
         </div>
-
         <div class="form-group">
-            <label for="coupon-rate">年化票息 (%)</label>
-            <input type="number" id="coupon-rate" value="20" min="0" max="100" step="0.5" oninput="runAllCalculations()">
-            <div id="err-coupon" class="error-text">❌ 年化票息範圍必須介於 0 至 100 之間</div>
+            <label for="knockin-pct">下限價 (%)</label>
+            <input type="number" id="knockin-pct" value="60" min="0" max="100" step="1" oninput="runAllCalculations()">
+            <div id="err-knockin" class="error-text">❌ 下限價範圍必須介於 0 至 100 之間</div>
         </div>
     </div>
 
-    <div class="ticker-section-title">🔍 連結標的設定 (Finnhub API 即時聯網查價)</div>
+    <div class="ticker-section-title">🔍 連結標的設定 (請輸入股票簡稱與手動填寫參考價)</div>
     <div class="tickers-grid">
         <div class="ticker-card">
             <div class="ticker-label">標的 1</div>
             <input type="text" id="t1" class="ticker-input" value="NVDA" oninput="updateTickerInfo(1)">
+            <input type="number" id="t1-ref" class="ref-price-input" value="192.53" placeholder="手動輸入參考價" oninput="runAllCalculations()">
             <div id="t1-info" class="ticker-info"></div>
         </div>
         <div class="ticker-card">
             <div class="ticker-label">標的 2</div>
             <input type="text" id="t2" class="ticker-input" value="TSM" oninput="updateTickerInfo(2)">
+            <input type="number" id="t2-ref" class="ref-price-input" value="172.10" placeholder="手動輸入參考價" oninput="runAllCalculations()">
             <div id="t2-info" class="ticker-info"></div>
         </div>
         <div class="ticker-card">
             <div class="ticker-label">標的 3</div>
             <input type="text" id="t3" class="ticker-input" value="AMD" oninput="updateTickerInfo(3)">
+            <input type="number" id="t3-ref" class="ref-price-input" value="521.58" placeholder="手動輸入參考價" oninput="runAllCalculations()">
             <div id="t3-info" class="ticker-info"></div>
         </div>
         <div class="ticker-card">
             <div class="ticker-label">標的 4</div>
             <input type="text" id="t4" class="ticker-input" value="AAPL" oninput="updateTickerInfo(4)">
+            <input type="number" id="t4-ref" class="ref-price-input" value="214.30" placeholder="手動輸入參考價" oninput="runAllCalculations()">
             <div id="t4-info" class="ticker-info"></div>
         </div>
         <div class="ticker-card">
             <div class="ticker-label">標的 5</div>
             <input type="text" id="t5" class="ticker-input" value="MSFT" oninput="updateTickerInfo(5)">
+            <input type="number" id="t5-ref" class="ref-price-input" value="448.20" placeholder="手動輸入參考價" oninput="runAllCalculations()">
             <div id="t5-info" class="ticker-info"></div>
         </div>
     </div>
@@ -324,7 +347,7 @@
         <table id="breakdown-table">
             <thead>
                 <tr>
-                    <th>月份</th>
+                    <th>已領月份</th>
                     <th>預估發放利息 (台幣)</th>
                     <th>累積領息 (台幣)</th>
                     <th style="width: 40%; text-align: left; padding-left: 20px;">發放條件</th>
@@ -336,81 +359,110 @@
     </div>
 
     <div class="disclaimer">
-        * 註：本試算網頁之報價接口完全由 Finnhub.io 提供（美股計價單位：美元），支援所有真實美國上市股票代號之股價連動。執行價計算公式：市場當前真實價 × 執行價百分比。
+        * 註：本工具對接 Finnhub 全球即時金融介面。執行價與下限價之美金數值，完全基於使用者手動輸入之參考價聯動計算。月度明細之時間推算採西元日期精確加算。
     </div>
 </div>
 
 <script>
-    // 您的專屬 Finnhub API Key 授權金鑰
+    // Finnhub 免簽名跨網域專用即時報價憑證金鑰
     const FINNHUB_TOKEN = "d8vv9c1r01qp5hrm64fgd8vv9c1r01qp5hrm64g0";
 
     function formatCurrency(num) {
         return 'NT$ ' + Math.round(num).toLocaleString('zh-TW');
     }
 
-    // 整合 Finnhub 免簽名跨網域專用即時報價介面
+    // 只負責線上查詢「即時市價」並更新其介面，不影響手動輸入的參考價
     async function updateTickerInfo(id) {
         const inputEl = document.getElementById('t' + id);
-        const infoEl = document.getElementById('t' + id + '-info');
-        const strikePct = parseFloat(document.getElementById('strike-pct').value) || 0;
+        const infoBox = document.getElementById('t' + id + '-info');
         
         let symbol = inputEl.value.trim().toUpperCase();
         if (symbol === '') {
-            infoEl.innerHTML = "<span style='color:#a0aec0;'>未輸入標的</span>";
+            infoBox.innerHTML = "<span style='color:#a0aec0;'>未輸入標的</span>";
             return;
         }
 
         try {
-            // 串接 Finnhub 官方 Quote API 端點
             let response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_TOKEN}`);
-            if (!response.ok) throw new Error("Finnhub API Connection Failed");
+            if (!response.ok) throw new Error("Connection Error");
             
             let data = await response.json();
+            let livePrice = data.c; // 獲取最新即時市場真實價格
             
-            // Finnhub 的 'c' 欄位即代表 Current Price（最新即時市價/收盤價）
-            let currentPrice = data.c; 
+            if (!livePrice || livePrice === 0) throw new Error("Invalid Symbol");
+
+            // 存儲即時市價至全域自訂屬性中，供計算聯動渲染使用
+            inputEl.setAttribute('data-live-price', livePrice);
             
-            // 如果輸入了查無此股的亂碼，Finnhub 的價格會歸零，此時強制跳到降級防錯機制
-            if (!currentPrice || currentPrice === 0) {
-                throw new Error("Symbol Not Found");
-            }
-            
-            let calcStrikePrice = currentPrice * (strikePct / 100);
-            
-            infoEl.innerHTML = `
-                <strong style="font-size:13px; color:#0f4c81;">${symbol} (真實美股)</strong><br>
-                參考價: <span style="color:#10b981; font-weight:bold;">$${currentPrice.toFixed(2)}</span><br>
-                執行價: <span style="color:#d97706; font-weight:bold;">$${calcStrikePrice.toFixed(2)}</span>
-            `;
+            // 執行當前全頁渲染刷新
+            renderTickerCardsOnly(id);
         } catch (error) {
-            // 降級防錯機制：若 API 超過流量限制或輸入亂碼代號，採字母生成機制，維持畫面流暢
-            let hash = 0;
-            for (let i = 0; i < symbol.length; i++) hash = symbol.charCodeAt(i) + ((hash << 5) - hash);
-            let mockPrice = Math.abs((hash % 150) + 100); 
-            let calcStrikePrice = mockPrice * (strikePct / 100);
-            
-            infoEl.innerHTML = `
-                <strong style="color:#64748b;">${symbol} (模擬試算價)</strong><br>
-                參考價: $${mockPrice.toFixed(2)}<br>
-                執行價: <span style="color:#d97706; font-weight:bold;">$${calcStrikePrice.toFixed(2)}</span>
-            `;
+            inputEl.setAttribute('data-live-price', 'N/A');
+            renderTickerCardsOnly(id);
         }
+    }
+
+    // 依據「手動輸入參考價」動態換算即時市價、執行價與下限價美金數值
+    function renderTickerCardsOnly(id) {
+        const inputEl = document.getElementById('t' + id);
+        const refInput = document.getElementById('t' + id + '-ref');
+        const infoBox = document.getElementById('t' + id + '-info');
+        
+        const strikePct = parseFloat(document.getElementById('strike-pct').value) || 0;
+        const knockinPct = parseFloat(document.getElementById('knockin-pct').value) || 0;
+        
+        let symbol = inputEl.value.trim().toUpperCase();
+        let refPrice = parseFloat(refInput.value) || 0;
+        let livePriceAttr = inputEl.getAttribute('data-live-price') || "查價中...";
+
+        let livePriceStr = (isNaN(livePriceAttr) || livePriceAttr === 'N/A') ? "N/A" : "$" + parseFloat(livePriceAttr).toFixed(2);
+        
+        // 執行公式運算：皆以「手動輸入參考價」為基準
+        let calcStrike = refPrice * (strikePct / 100);
+        let calcKnockIn = refPrice * (knockinPct / 100);
+
+        infoBox.innerHTML = `
+            <strong>即時市價:</strong> <span style="color:#10b981; font-weight:bold;">${livePriceStr}</span><br>
+            <strong>參考價(手動):</strong> $${refPrice.toFixed(2)}<br>
+            <strong>執行價:</strong> <span style="color:#d97706; font-weight:bold;">$${calcStrike.toFixed(2)}</span><br>
+            <strong>下限價:</strong> <span style="color:#dc2626; font-weight:bold;">$${calcKnockIn.toFixed(2)}</span>
+        `;
+    }
+
+    // 西元進場時間 + n 個月的月份時間推算函數
+    function calculateFutureMonthStr(baseDateStr, addedMonths) {
+        if (!baseDateStr) return "第 " + addedMonths + " 個月";
+        
+        let dateObj = new Date(baseDateStr);
+        if (isNaN(dateObj.getTime())) return "第 " + addedMonths + " 個月";
+
+        // 現有月份遞增
+        dateObj.setMonth(dateObj.getMonth() + addedMonths);
+        
+        let yyyy = dateObj.getFullYear();
+        let mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+        return `${yyyy} 年 ${mm} 月`;
     }
 
     function runAllCalculations() {
         const invInput = document.getElementById('investment');
         const strikeInput = document.getElementById('strike-pct');
+        const knockinInput = document.getElementById('knockin-pct');
         const couponInput = document.getElementById('coupon-rate');
         const periodSelect = document.getElementById('period');
+        const startDateInput = document.getElementById('start-date');
 
         const errInv = document.getElementById('err-investment');
         const errStrike = document.getElementById('err-strike');
+        const errKnockin = document.getElementById('err-knockin');
         const errCoupon = document.getElementById('err-coupon');
 
         let principal = parseFloat(invInput.value);
         let strikePct = parseFloat(strikeInput.value);
+        let knockinPct = parseFloat(knockinInput.value);
         let couponRate = parseFloat(couponInput.value);
         let months = parseInt(periodSelect.value);
+        let startDateValue = startDateInput.value;
 
         let hasError = false;
 
@@ -428,6 +480,13 @@
             errStrike.style.display = 'none';
         }
 
+        if (isNaN(knockinPct) || knockinPct < 0 || knockinPct > 100) {
+            errKnockin.style.display = 'block';
+            hasError = true;
+        } else {
+            errKnockin.style.display = 'none';
+        }
+
         if (isNaN(couponRate) || couponRate < 0 || couponRate > 100) {
             errCoupon.style.display = 'block';
             hasError = true;
@@ -435,13 +494,14 @@
             errCoupon.style.display = 'none';
         }
 
-        // 輪詢更新 5 檔美股卡片
+        // 重新繪製並渲染 5 顆標的卡片的所有公式衍生美金數字
         for (let id = 1; id <= 5; id++) {
-            updateTickerInfo(id);
+            renderTickerCardsOnly(id);
         }
 
         if (hasError) return;
 
+        // 計算核心收益摘要
         let monthlyInterest = (principal * (couponRate / 100)) / 12;
         let totalAccumulatedInterest = monthlyInterest * months;
 
@@ -449,6 +509,7 @@
         document.getElementById('out-total-interest').innerText = formatCurrency(totalAccumulatedInterest);
         document.getElementById('out-return-principal').innerText = formatCurrency(principal);
 
+        // 重構並動態渲染月度利息明細表格
         const tbody = document.getElementById('table-body');
         tbody.innerHTML = '';
 
@@ -458,22 +519,26 @@
             
             const tr = document.createElement('tr');
 
+            // 1. 已領月份 (改為呈現：進場時間 + n個月的西元時間格式)
             const tdMonth = document.createElement('td');
-            tdMonth.innerHTML = `<strong>第 ${m} 個月</strong>`;
+            tdMonth.innerHTML = `<strong>${calculateFutureMonthStr(startDateValue, m)}</strong>`;
             tr.appendChild(tdMonth);
 
+            // 2. 預估發放利息
             const tdMonthly = document.createElement('td');
             tdMonthly.innerText = formatCurrency(monthlyInterest);
             tdMonthly.style.color = '#059669';
             tdMonthly.style.fontWeight = 'bold';
             tr.appendChild(tdMonthly);
 
+            // 3. 累積領息
             const tdAccum = document.createElement('td');
             tdAccum.innerText = formatCurrency(progressiveInterest);
             tdAccum.style.color = '#0f4c81';
             tdAccum.style.fontWeight = 'bold';
             tr.appendChild(tdAccum);
 
+            // 4. 發放條件分流
             const tdCond = document.createElement('td');
             tdCond.style.textAlign = 'left';
             tdCond.style.paddingLeft = '20px';
@@ -491,7 +556,11 @@
         }
     }
 
+    // 初始化自動發送與試算
     window.onload = function() {
+        for (let id = 1; id <= 5; id++) {
+            updateTickerInfo(id);
+        }
         runAllCalculations();
     };
 </script>
