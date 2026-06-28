@@ -7,10 +7,9 @@
     <script>
         // 【安全防護】嚴格檢查 HTTP 來源網頁 (Referrer) 驗證機制
         (function() {
-            var allowedReferrer = "https://b89tiger009.github.io/Portal_web_encV2/";
+            var allowedReferrer = "https://b89tiger009.github.io/Portal_web_enc/";
             var currentReferrer = document.referrer;
             
-            // 如果來源網頁不完全符合允許的網址，則強制中斷載入並直接跳轉回門戶網站
             if (!currentReferrer || currentReferrer.indexOf(allowedReferrer) !== 0) {
                 alert("錯誤：未授權的存取來源！本網頁僅允許從指定門戶網站開啟。\\n\\nUnauthorized Access.");
                 window.location.href = allowedReferrer;
@@ -27,7 +26,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 950px;
+            max-width: 1050px;
             margin: 0 auto;
             background-color: #ffffff;
             border-radius: 12px;
@@ -47,7 +46,7 @@
             font-size: 15px;
         }
         
-        /* 輸入欄位網格佈局 (依照指定順序排列) */
+        /* 輸入欄位網格佈局 */
         .input-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -90,7 +89,7 @@
             font-weight: bold;
             color: #0f4c81;
             margin: 25px 0 12px 0;
-            font-size: 15px;
+            font-size: 16px;
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 5px;
         }
@@ -98,7 +97,7 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 12px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         .ticker-card {
             background-color: #f8fafc;
@@ -144,9 +143,132 @@
             min-height: 90px;
         }
 
-        /* 試算成果摘要字卡 */
+        /* ─── 全新簡化版流程圖樣式區 ─── */
+        .flow-diagram-container {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 30px 20px;
+            margin: 25px 0;
+            overflow-x: auto;
+        }
+        .flow-timeline-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            min-width: 950px;
+            padding-top: 10px;
+            padding-bottom: 20px;
+        }
+        /* 時間軸基線與箭頭 */
+        .flow-main-axis {
+            position: absolute;
+            top: 240px;
+            left: 2%;
+            width: 95%;
+            height: 3px;
+            background-color: #333333;
+            z-index: 1;
+        }
+        .flow-main-axis::after {
+            content: "";
+            position: absolute;
+            right: -2px;
+            top: -6px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 7px 0 7px 12px;
+            border-color: transparent transparent transparent #333333;
+        }
+        
+        /* 縱向引線 */
+        .flow-lead-line {
+            position: absolute;
+            top: 180px;
+            height: 60px;
+            width: 2px;
+            background-color: #333333;
+            z-index: 1;
+        }
+        /* 引線上的黑點 */
+        .flow-axis-dot {
+            position: absolute;
+            top: 236px;
+            width: 10px;
+            height: 10px;
+            background-color: #333333;
+            border-radius: 50%;
+            transform: translateX(-4px);
+            z-index: 2;
+        }
+
+        /* 卡片共同樣式 */
+        .simple-flow-box {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 13px;
+            line-height: 1.6;
+            width: 210px;
+            min-height: 170px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-sizing: border-box;
+            z-index: 2;
+            text-align: center;
+        }
+        .simple-flow-box .box-header {
+            font-size: 14px;
+            color: #555555;
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        /* 各卡片自訂外框顏色 */
+        .box-start { border: 2px solid #4caf50; text-align: left !important; }
+        .box-month1 { border: 2px solid #2196f3; }
+        .box-ko { border: 2px solid #ff9800; }
+        .box-end { border: 2px solid #000000; text-align: left !important; }
+
+        /* 動態連動資料內嵌框 */
+        .embed-value-box {
+            border: 1px solid #0f4c81;
+            padding: 4px 8px;
+            display: inline-block;
+            font-weight: bold;
+            font-size: 14px;
+            margin: 6px 0;
+            border-radius: 4px;
+        }
+        .embed-value-box.red-text {
+            color: #e53e3e;
+        }
+
+        /* 下方提前出場描述區 */
+        .ko-bottom-desc-area {
+            margin-top: 25px;
+            text-align: center;
+            min-width: 950px;
+        }
+        .ko-desc-title {
+            color: #e53e3e;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+        .ko-desc-item {
+            font-size: 13px;
+            margin: 6px 0;
+            color: #444444;
+        }
+        .ko-desc-item span {
+            font-weight: bold;
+        }
+
+        /* 試算成果摘要及明細樣式 */
         .result-section {
-            margin-top: 35px;
+            margin-top: 15px;
             border-top: 2px dashed #cbd5e1;
             padding-top: 25px;
         }
@@ -186,8 +308,6 @@
         .stat-value.green {
             color: #10b981;
         }
-
-        /* 明細表格樣式 */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -205,31 +325,6 @@
             color: white;
             font-weight: bold;
         }
-        tr:hover {
-            background-color: #f8fafc;
-        }
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            font-size: 12px;
-            font-weight: bold;
-            border-radius: 4px;
-            text-align: left;
-            line-height: 1.5;
-        }
-        .badge-guaranteed {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-        .badge-conditional {
-            background-color: #dbeafe;
-            color: #1e40af;
-        }
-        .badge-final {
-            background-color: #fffbeb;
-            color: #b45309;
-            border: 1px solid #fef3c7;
-        }
         .disclaimer {
             font-size: 12px;
             color: #94a3b8;
@@ -244,8 +339,9 @@
 
 <div class="container">
     <h1>FCN固定配息之境外結構型商品試算工具</h1>
-    <div class="subtitle">整合自訂進場與下限價演算、Finnhub 即時真實查價與動態月份流動條款</div>
+    <div class="subtitle">整合簡化版時序架構流程圖、Finnhub 即時自動查價與動態公式演算</div>
 
+    <!-- 參數輸入區 -->
     <div class="input-grid">
         <div class="form-group">
             <label for="investment">投資本金 (台幣元)</label>
@@ -292,40 +388,102 @@
         </div>
     </div>
 
+    <!-- 連結標的設定區 -->
     <div class="ticker-section-title">🔍 連結標的設定 (請輸入股票簡稱與手動填寫參考價)</div>
     <div class="tickers-grid">
         <div class="ticker-card">
             <div class="ticker-label">標的 1</div>
             <input type="text" id="t1" class="ticker-input" value="NVDA" oninput="updateTickerInfo(1)">
-            <input type="number" id="t1-ref" class="ref-price-input" value="192.53" placeholder="手動輸入參考價" oninput="runAllCalculations()">
+            <input type="number" id="t1-ref" class="ref-price-input" value="192.53" oninput="runAllCalculations()">
             <div id="t1-info" class="ticker-info"></div>
         </div>
         <div class="ticker-card">
             <div class="ticker-label">標的 2</div>
             <input type="text" id="t2" class="ticker-input" value="TSM" oninput="updateTickerInfo(2)">
-            <input type="number" id="t2-ref" class="ref-price-input" value="172.10" placeholder="手動輸入參考價" oninput="runAllCalculations()">
+            <input type="number" id="t2-ref" class="ref-price-input" value="172.10" oninput="runAllCalculations()">
             <div id="t2-info" class="ticker-info"></div>
         </div>
         <div class="ticker-card">
             <div class="ticker-label">標的 3</div>
             <input type="text" id="t3" class="ticker-input" value="AMD" oninput="updateTickerInfo(3)">
-            <input type="number" id="t3-ref" class="ref-price-input" value="521.58" placeholder="手動輸入參考價" oninput="runAllCalculations()">
+            <input type="number" id="t3-ref" class="ref-price-input" value="521.58" oninput="runAllCalculations()">
             <div id="t3-info" class="ticker-info"></div>
         </div>
         <div class="ticker-card">
             <div class="ticker-label">標的 4</div>
             <input type="text" id="t4" class="ticker-input" value="AAPL" oninput="updateTickerInfo(4)">
-            <input type="number" id="t4-ref" class="ref-price-input" value="214.30" placeholder="手動輸入參考價" oninput="runAllCalculations()">
+            <input type="number" id="t4-ref" class="ref-price-input" value="214.30" oninput="runAllCalculations()">
             <div id="t4-info" class="ticker-info"></div>
         </div>
         <div class="ticker-card">
             <div class="ticker-label">標的 5</div>
             <input type="text" id="t5" class="ticker-input" value="MSFT" oninput="updateTickerInfo(5)">
-            <input type="number" id="t5-ref" class="ref-price-input" value="448.20" placeholder="手動輸入參考價" oninput="runAllCalculations()">
+            <input type="number" id="t5-ref" class="ref-price-input" value="448.20" oninput="runAllCalculations()">
             <div id="t5-info" class="ticker-info"></div>
         </div>
     </div>
 
+    <!-- ─── 依照全新簡化圖片精確重新繪製之動態時序流程圖 ─── -->
+    <div class="ticker-section-title">📊 FCN 產品架構與存續條件動態時序圖</div>
+    <div class="flow-diagram-container">
+        <div class="flow-timeline-wrapper">
+            <!-- 貫穿時間軸 -->
+            <div class="flow-main-axis"></div>
+            
+            <!-- 1. 進場時間卡片 (綠色) -->
+            <div class="simple-flow-box box-start">
+                <span class="box-header" id="diag-start-title">進場時間：2026-06-28</span>
+                <div style="text-align:center;">
+                    <div class="embed-value-box red-text" id="diag-val-principal">NT$ 2,000,000</div>
+                </div>
+                <div id="diag-val-ref-list" style="font-size: 11px; color: #555; margin-top: 6px; line-height:1.4;"></div>
+            </div>
+            <div class="flow-lead-line" style="left: 115px;"></div>
+            <div class="flow-axis-dot" style="left: 115px;"></div>
+
+            <!-- 2. 第一個月卡片 (藍色) -->
+            <div class="simple-flow-box box-month1">
+                <span class="box-header" style="font-weight:bold; font-size:15px; color:#111;">第一個月<br>保證領息</span>
+                <div class="embed-value-box" id="diag-val-interest" style="color:#0f4c81; border-color:#2196f3;">NT$ 33,333</div>
+            </div>
+            <div class="flow-lead-line" style="left: 365px;"></div>
+            <div class="flow-axis-dot" style="left: 365px;"></div>
+
+            <!-- 3. 提前出場機制卡片 (橘色) -->
+            <div class="simple-flow-box box-ko">
+                <span class="box-header" style="font-weight:bold; font-size:16px; color:#e65100;">提前出場機制</span>
+                <div style="font-size:12px; color:#444; text-align:center; padding-top:10px;">
+                    第二個月開始的<br>每個觀察日<br>會進行比價
+                </div>
+            </div>
+            <div class="flow-lead-line" style="left: 615px;"></div>
+            <div class="flow-axis-dot" style="left: 615px;"></div>
+
+            <!-- 4. 期滿時間卡片 (黑色) -->
+            <div class="simple-flow-box box-end">
+                <span class="box-header" id="diag-end-title" style="font-weight:bold;">期滿時間：2026-12-28</span>
+                <div style="font-size:11px; color:#222; line-height:1.4;">
+                    <strong>成果1：</strong><br>
+                    到期日當天市價 &gt; 執行價<br>
+                    <span style="color:#2e7d32;font-weight:bold;">返還本金 + 當月配息</span><br><br>
+                    <strong>成果2：</strong><br>
+                    到期日當天市價 &lt; 執行價<br>
+                    <span style="color:#e65100;font-weight:bold;">以執行價買入股票</span>
+                </div>
+            </div>
+            <div class="flow-lead-line" style="left: 865px;"></div>
+            <div class="flow-axis-dot" style="left: 865px;"></div>
+        </div>
+
+        <!-- 下方文字描述區塊 -->
+        <div class="ko-bottom-desc-area">
+            <div class="ko-desc-title">提前出場機制有 2 種：</div>
+            <div class="ko-desc-item">① 觀察日當天市價<span>同時高於</span>參考價 ➔ <span style="color:#2e7d32;">返還本金 + 當月配息</span></div>
+            <div class="ko-desc-item">② 觀察日當天若<span>只有其中一市價</span>高於參考價 ➔ <span style="color:#0f4c81;">繼續領配息，等待下一個觀察日</span></div>
+        </div>
+    </div>
+
+    <!-- 試算結果摘要 -->
     <div class="result-section">
         <div class="section-title">💰 試算結果摘要</div>
         <div class="grid-3">
@@ -343,6 +501,7 @@
             </div>
         </div>
 
+        <!-- 月度利息發放預估明細 -->
         <div class="section-title">📊 月度利息發放預估明細</div>
         <table id="breakdown-table">
             <thead>
@@ -354,55 +513,42 @@
                 </tr>
             </thead>
             <tbody id="table-body">
-                </tbody>
+                <!-- 由 JavaScript 動態填入 -->
+            </tbody>
         </table>
     </div>
 
     <div class="disclaimer">
-        * 註：本工具對接 Finnhub 全球即時金融介面。執行價與下限價之美金數值，完全基於使用者手動輸入之參考價聯動計算。月度明細之時間推算採西元日期精確加算。
+        * 註：本工具時序架構流程圖完全依據最新簡化版設計重構，並與上方輸入參數即時動態綁定。FCN屬複雜結構型商品，投資人須審慎評估市場波動風險。
     </div>
 </div>
 
 <script>
-    // Finnhub 免簽名跨網域專用即時報價憑證金鑰
     const FINNHUB_TOKEN = "d8vv9c1r01qp5hrm64fgd8vv9c1r01qp5hrm64g0";
 
     function formatCurrency(num) {
         return 'NT$ ' + Math.round(num).toLocaleString('zh-TW');
     }
 
-    // 只負責線上查詢「即時市價」並更新其介面，不影響手動輸入的參考價
     async function updateTickerInfo(id) {
         const inputEl = document.getElementById('t' + id);
-        const infoBox = document.getElementById('t' + id + '-info');
-        
         let symbol = inputEl.value.trim().toUpperCase();
-        if (symbol === '') {
-            infoBox.innerHTML = "<span style='color:#a0aec0;'>未輸入標的</span>";
-            return;
-        }
+        if (symbol === '') return;
 
         try {
             let response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_TOKEN}`);
-            if (!response.ok) throw new Error("Connection Error");
-            
+            if (!response.ok) throw new Error("API Error");
             let data = await response.json();
-            let livePrice = data.c; // 獲取最新即時市場真實價格
-            
-            if (!livePrice || livePrice === 0) throw new Error("Invalid Symbol");
-
-            // 存儲即時市價至全域自訂屬性中，供計算聯動渲染使用
-            inputEl.setAttribute('data-live-price', livePrice);
-            
-            // 執行當前全頁渲染刷新
-            renderTickerCardsOnly(id);
-        } catch (error) {
+            if (data.c && data.c !== 0) {
+                inputEl.setAttribute('data-live-price', data.c);
+            }
+        } catch (e) {
             inputEl.setAttribute('data-live-price', 'N/A');
-            renderTickerCardsOnly(id);
         }
+        renderTickerCardsOnly(id);
+        syncDiagramReferences();
     }
 
-    // 依據「手動輸入參考價」動態換算即時市價、執行價與下限價美金數值
     function renderTickerCardsOnly(id) {
         const inputEl = document.getElementById('t' + id);
         const refInput = document.getElementById('t' + id + '-ref');
@@ -416,8 +562,6 @@
         let livePriceAttr = inputEl.getAttribute('data-live-price') || "查價中...";
 
         let livePriceStr = (isNaN(livePriceAttr) || livePriceAttr === 'N/A') ? "N/A" : "$" + parseFloat(livePriceAttr).toFixed(2);
-        
-        // 執行公式運算：皆以「手動輸入參考價」為基準
         let calcStrike = refPrice * (strikePct / 100);
         let calcKnockIn = refPrice * (knockinPct / 100);
 
@@ -429,19 +573,27 @@
         `;
     }
 
-    // 西元進場時間 + n 個月的月份時間推算函數
-    function calculateFutureMonthStr(baseDateStr, addedMonths) {
-        if (!baseDateStr) return "第 " + addedMonths + " 個月";
-        
-        let dateObj = new Date(baseDateStr);
-        if (isNaN(dateObj.getTime())) return "第 " + addedMonths + " 個月";
+    function syncDiagramReferences() {
+        let refListHtml = "";
+        for (let id = 1; id <= 5; id++) {
+            let symbol = document.getElementById('t' + id).value.trim().toUpperCase();
+            let refPrice = parseFloat(document.getElementById('t' + id + '-ref').value) || 0;
+            if (symbol !== '') {
+                refListHtml += `• ${symbol} 參考價: $${refPrice.toFixed(2)}<br>`;
+            }
+        }
+        document.getElementById('diag-val-ref-list').innerHTML = refListHtml || "未設定標的";
+    }
 
-        // 現有月份遞增
+    function calculateFutureMonthStr(baseDateStr, addedMonths) {
+        if (!baseDateStr) return "";
+        let dateObj = new Date(baseDateStr);
+        if (isNaN(dateObj.getTime())) return "";
         dateObj.setMonth(dateObj.getMonth() + addedMonths);
-        
         let yyyy = dateObj.getFullYear();
         let mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-        return `${yyyy} 年 ${mm} 月`;
+        let dd = String(dateObj.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
     }
 
     function runAllCalculations() {
@@ -457,51 +609,26 @@
         const errKnockin = document.getElementById('err-knockin');
         const errCoupon = document.getElementById('err-coupon');
 
-        let principal = parseFloat(invInput.value);
-        let strikePct = parseFloat(strikeInput.value);
-        let knockinPct = parseFloat(knockinInput.value);
-        let couponRate = parseFloat(couponInput.value);
-        let months = parseInt(periodSelect.value);
+        let principal = parseFloat(invInput.value) || 0;
+        let strikePct = parseFloat(strikeInput.value) || 0;
+        let knockinPct = parseFloat(knockinInput.value) || 0;
+        let couponRate = parseFloat(couponInput.value) || 0;
+        let months = parseInt(periodSelect.value) || 1;
         let startDateValue = startDateInput.value;
 
         let hasError = false;
+        if (principal < 0) { errInv.style.display = 'block'; hasError = true; } else { errInv.style.display = 'none'; }
+        if (strikePct < 0 || strikePct > 100) { errStrike.style.display = 'block'; hasError = true; } else { errStrike.style.display = 'none'; }
+        if (knockinPct < 0 || knockinPct > 100) { errKnockin.style.display = 'block'; hasError = true; } else { errKnockin.style.display = 'none'; }
+        if (couponRate < 0 || couponRate > 100) { errCoupon.style.display = 'block'; hasError = true; } else { errCoupon.style.display = 'none'; }
 
-        if (isNaN(principal) || principal < 0) {
-            errInv.style.display = 'block';
-            hasError = true;
-        } else {
-            errInv.style.display = 'none';
-        }
-
-        if (isNaN(strikePct) || strikePct < 0 || strikePct > 100) {
-            errStrike.style.display = 'block';
-            hasError = true;
-        } else {
-            errStrike.style.display = 'none';
-        }
-
-        if (isNaN(knockinPct) || knockinPct < 0 || knockinPct > 100) {
-            errKnockin.style.display = 'block';
-            hasError = true;
-        } else {
-            errKnockin.style.display = 'none';
-        }
-
-        if (isNaN(couponRate) || couponRate < 0 || couponRate > 100) {
-            errCoupon.style.display = 'block';
-            hasError = true;
-        } else {
-            errCoupon.style.display = 'none';
-        }
-
-        // 重新繪製並渲染 5 顆標的卡片的所有公式衍生美金數字
         for (let id = 1; id <= 5; id++) {
             renderTickerCardsOnly(id);
         }
+        syncDiagramReferences();
 
         if (hasError) return;
 
-        // 計算核心收益摘要
         let monthlyInterest = (principal * (couponRate / 100)) / 12;
         let totalAccumulatedInterest = monthlyInterest * months;
 
@@ -509,40 +636,37 @@
         document.getElementById('out-total-interest').innerText = formatCurrency(totalAccumulatedInterest);
         document.getElementById('out-return-principal').innerText = formatCurrency(principal);
 
-        // 重構並動態渲染月度利息明細表格
+        // ─── 核心連動：依據全新簡化圖片更新流程圖內嵌元件 ───
+        document.getElementById('diag-start-title').innerText = "進場時間：" + (startDateValue || "未選取");
+        document.getElementById('diag-end-title').innerText = "期滿時間：" + calculateFutureMonthStr(startDateValue, months);
+        document.getElementById('diag-val-principal').innerText = formatCurrency(principal);
+        document.getElementById('diag-val-interest').innerText = formatCurrency(monthlyInterest);
+
+        // 重塑明細表格
         const tbody = document.getElementById('table-body');
         tbody.innerHTML = '';
-
         let progressiveInterest = 0;
         for (let m = 1; m <= months; m++) {
             progressiveInterest += monthlyInterest;
-            
             const tr = document.createElement('tr');
 
-            // 1. 已領月份 (改為呈現：進場時間 + n個月的西元時間格式)
             const tdMonth = document.createElement('td');
-            tdMonth.innerHTML = `<strong>${calculateFutureMonthStr(startDateValue, m)}</strong>`;
+            let fullDateStr = calculateFutureMonthStr(startDateValue, m);
+            tdMonth.innerHTML = `<strong>${fullDateStr ? fullDateStr.substring(0,7).replace('-',' 年 ') + ' 月' : '第 ' + m + ' 個月'}</strong>`;
             tr.appendChild(tdMonth);
 
-            // 2. 預估發放利息
             const tdMonthly = document.createElement('td');
             tdMonthly.innerText = formatCurrency(monthlyInterest);
-            tdMonthly.style.color = '#059669';
-            tdMonthly.style.fontWeight = 'bold';
+            tdMonthly.style.color = '#059669'; tdMonthly.style.fontWeight = 'bold';
             tr.appendChild(tdMonthly);
 
-            // 3. 累積領息
             const tdAccum = document.createElement('td');
             tdAccum.innerText = formatCurrency(progressiveInterest);
-            tdAccum.style.color = '#0f4c81';
-            tdAccum.style.fontWeight = 'bold';
+            tdAccum.style.color = '#0f4c81'; tdAccum.style.fontWeight = 'bold';
             tr.appendChild(tdAccum);
 
-            // 4. 發放條件分流
             const tdCond = document.createElement('td');
-            tdCond.style.textAlign = 'left';
-            tdCond.style.paddingLeft = '20px';
-            
+            tdCond.style.textAlign = 'left'; tdCond.style.paddingLeft = '20px';
             if (m === 1) {
                 tdCond.innerHTML = '<span class="badge badge-guaranteed">保證領息 (必定獲得)</span>';
             } else if (m < months) {
@@ -551,16 +675,12 @@
                 tdCond.innerHTML = '<div class="badge badge-final">1. 標的未漲破參考價<br>或<br>2. 跌破執行價承接股票</div>';
             }
             tr.appendChild(tdCond);
-
             tbody.appendChild(tr);
         }
     }
 
-    // 初始化自動發送與試算
     window.onload = function() {
-        for (let id = 1; id <= 5; id++) {
-            updateTickerInfo(id);
-        }
+        for (let id = 1; id <= 5; id++) { updateTickerInfo(id); }
         runAllCalculations();
     };
 </script>
